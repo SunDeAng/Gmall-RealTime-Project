@@ -23,6 +23,7 @@
         <module>gmall-realtime</module>
         <module>gmall-publisher</module>
         <module>dw-chart</module>
+        <module>gmall-canal</module>
     </modules>
 
 
@@ -115,6 +116,18 @@
                 <groupId>org.apache.spark</groupId>
                 <artifactId>spark-streaming-kafka-0-10_2.12</artifactId>
                 <version>${spark.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.phoenix</groupId>
+                <artifactId>phoenix-core</artifactId>
+                <version>5.0.0-HBase-2.0</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.glassfish</groupId>
+                        <artifactId>javax.el</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
         </dependencies>
     </dependencyManagement>

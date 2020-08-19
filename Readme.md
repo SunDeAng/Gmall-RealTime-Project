@@ -9,7 +9,7 @@
 
 ## 二、框架技术支持
 
-以下为需要的框架及技术，同时也是本项目的启动顺序
+以下为需要的框架及技术
 
 1. Hadoop
 2. Zookeeper
@@ -18,7 +18,10 @@
 5. Nginx
 6. HBase
 7. Phoenix
-8. Canal
+8. SpringBoot
+9. Canal
+10. ElsaticSearch
+11. Kiberna
 
 
 
@@ -44,7 +47,7 @@
 
 >本模块为模拟日志数据生成的模块
 >
->可以在本模块配置生产的数量等信息
+>可以在本模块配置日志生产的数量等信息
 
 ### 4、gmall-realtime
 
@@ -64,7 +67,7 @@
 
 > 本模块为canal组件模块
 >
-> 
+> 本模块会将监控到的数据库变化信息进行处理并传入Kafka
 
 ### 7、dw-chart
 
@@ -100,13 +103,15 @@
 
 >0、第二章框架技术按顺序(1-7)启动
 >
->1、gmall-realtime模块中的DauAPP(负责创建连接池，获取连接等)
+>1、gmall-logger模块打包到集群，在所有节点启动(使用脚本)
 >
->2、gmall-publisher模块负责发布数据
+>2、gmall-realtime模块中的DauAPP(负责创建连接池，获取连接等)
 >
->3、dw-chark模块主程序负责实时显示数据(从phoenix取数据发布到端口)
+>3、gmall-publisher模块负责发布数据
 >
->4、gmall-mocker模块的JsonMocker负责产生实时数据(从端口取数据进行实时显示)
+>4、dw-chark模块主程序负责实时显示数据(从phoenix取数据发布到端口)
+>
+>5、gmall-mocker模块的JsonMocker负责产生实时数据(从端口取数据进行实时显示)
 
 ### 2、实时日交易额显示启动
 
@@ -119,6 +124,16 @@
 >3、gmall-publisher模块负责发布数据(从phoenix取数据发布到端口)
 >
 >4、dw-chark模块主程序负责实时显示数据(从端口取数据进行实时显示)
+
+3、优惠券预警显示启动
+
+> 0、第二章框架技术按顺序(2，3，5，8，10，11)启动
+>
+> 1、gmall-realtime模块下的AlertCouponApp
+>
+> 2、gmall-mocker模块中的JsonMocker(负责产生数据)
+>
+> 3、Kibana页面实时显示变化数据
 
 
 
@@ -161,3 +176,21 @@
 > Canal
 >
 > 11111	canal默认端口
+
+> 数据发布(gmall-publisher)接口
+>
+> 8070
+
+> 数据实时监控访问接口
+>
+> 8087
+
+> Kibana
+>
+> 5601	页面访问端口
+
+>ElsaticSearch
+>
+>9200	Http外部通信
+>
+>9300	Tcp集群内部通信

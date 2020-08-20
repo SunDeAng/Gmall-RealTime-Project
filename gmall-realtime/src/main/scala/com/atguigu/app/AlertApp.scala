@@ -20,6 +20,33 @@ import scala.util.control.Breaks._
  * @Author: Sdaer
  * @Date: 2020-08-18
  * @Desc:
+ *       预警执行流程
+ *       1.创建SparkConf和StreamingContext
+ *       2.读取Kafka事件主题数据创建流
+ *       3.转化为样例类对象
+ *       4.开5分钟的窗口
+ *       5.按照mid做分组处理
+ *       6.对单条数据进行处理
+ *          6.1三次及以上用不同账号(登陆并领取优惠券)：对uid进行去重
+ *          6.2没有浏览商品：反面考虑，如果有浏览商品，当前mid不产生预警日志
+ *              a.创建Set用于存放领券的UID；
+ *                创建用于存放领券涉及的商品ID；
+ *                创建List用于存放用户行为
+ *                定义标志位用于标识是否有浏览行为
+ *              b.遍历logIter
+ *                提取时间类型（防止代码冗余）
+ *                判断当前数据是否有领券行为并执行相应的操作
+ *       7.将生成的预警日志写入ES
+ *
+ *       注意点
+ *       1）为什么要写入ES
+ *          ES支持分词查询，这是ES最大的优势，同时ES对接了Kibana页面显示框架，可以实时的显示结果
+ *       2）需求的解决思路是什么
+ *          (1)开5分钟的窗口:对应需求的5分组，其次是5秒的步长，如果不配，默认是批次的时间间隔
+ *          (2)按照mid分组：必须是一设备多账号，故按照mid分组
+ *          (3)三次不同账户：对分组后的uid进行去重
+ *          (4)没有浏览商品：就是有浏览商品的行为就不产生预警日志
+ *          (5)每分钟记录一次：在ES存储中，我们可以把ID设置为分钟时间戳，这样可以对每分钟去重
  */
 object AlertApp {
 
@@ -65,7 +92,7 @@ object AlertApp {
 
       //a.创建Set用于存放领券的UID
       val uidSet: util.HashSet[String] = new java.util.HashSet[String]()
-      //创建用于存放凌群涉及的商品ID
+      //创建用于存放领券涉及的商品ID
       val itemIds: util.HashSet[String] = new java.util.HashSet[String]()
       //创建List用于存放用户行为
       val events = new util.ArrayList[String]()

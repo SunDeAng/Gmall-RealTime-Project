@@ -8,6 +8,11 @@ import redis.clients.jedis.{Jedis, JedisPool, JedisPoolConfig}
  * @Author: Sdaer
  * @Date: 2020-08-16
  * @Desc:
+ *      Redis连接获取工具类
+ *      1.先开辟一个连接池(JedisPool)
+ *         1.1 读取配置文件，获得地址和端口
+ *         1.2 配置连接要素
+ *      2.再从连接池中获取一个连接
  */
 object RedisUtil {
 

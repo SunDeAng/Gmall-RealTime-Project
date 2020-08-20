@@ -16,7 +16,24 @@ import static com.atguigu.handle.CanalHandler.handle;
  * @Author: Sdaer
  * @Date: 2020-08-18
  * @Desc:
- *        获取Canal客户端，并获取数据发送到Kafka
+ *        本类的作用
+ *        1、获取Canal连接
+ *        2、循环监控获取数据
+ *
+ *        Canal信息架构
+ *        Message：一次canal从日志榨取的信息，一个message可以包含多个sql执行的结果
+ *          Entry：对应一个sql命令，一个sql可能会对多行记录造成影响
+ *              TableName(表名)
+ *              EntryType(实例类型)：ROWDATA(我们要用的)
+ *              StoreValue(存储的数据)：此数据为序列号的数据不可直接使用
+ *
+ *              StoreValue反序列化后得到RowChange
+ *              RowChange：
+ *                  EventType：DDL，DCL关键字等
+ *                  RowDataList：行数据列表(包含多行数据)
+ *                      RowData:(一行数据)
+ *                          Column：列
+ *
  *
  */
 public class CanalClient {

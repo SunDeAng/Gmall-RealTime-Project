@@ -24,6 +24,10 @@ public class GmallConstants {
     //ES中预警日志索引前缀
     public static final String GMALL_ES_ALERT_INFO_PRE = "gmall_coupon_alert";
 
+
+    //ES中销售明细的索引前缀
+    public static final String GMALL_ES_SALE_DETAIL_PRE = "gmall200317_sale_detail";
+
     public static final String ES_INDEX_DAU="gmall2020_dau";
     public static final String ES_INDEX_NEW_MID="gmall2020_new_mid";
     public static final String ES_INDEX_NEW_ORDER="gmall2020_new_order";

@@ -272,16 +272,16 @@ Canal信息架构
 
 #### 4）注意点
 
-	1）为什么使用canal
-	       canal是一个实时监控数据库变化的框架，在数据库中数据被改变后，canal可以监控到
-	        并可以实时传输这些数据进行解析或远程同步数据库
-	        canal外部套了一层从数据库的壳，因此可以实时获取数据
+>1）为什么使用canal
+>
+>>canal是一个实时监控数据库变化的框架，在数据库中数据被改变后，canal可以监控到
+>>并可以实时传输这些数据进行解析或远程同步数据库
+>>canal外部套了一层从数据库的壳，因此可以实时获取数据
 
-	2）数据保存到Phoenix的隐式方法
-	      将数据保存到Phoenix需要借助org.apache.phoenix.spark._
-	      本包提供了对rdd的隐式扩展
-
-
+>2）数据保存到Phoenix的隐式方法
+>
+>>将数据保存到Phoenix需要借助org.apache.phoenix.spark._
+>>本包提供了对rdd的隐式扩展
 
 #### 5）项目启动流程
 
@@ -385,6 +385,115 @@ graph LR
 
 
 ### 4、灵活分析需求
+
+#### 1）流程图
+
+##### 1.整体流程图
+
+```mermaid
+graph LR
+
+	Kafka[4.KafkaCluster]
+	Spark[5.Spark Streaming]
+	Redis[6.Redis]
+	ES[7.ES]
+	HBase[8.Hbase]
+	SBI[9.SpringBoot接口]
+	WEB[10.前端EChart]
+	Kibana[11.Kibana]
+	DB[12.DataBase]
+	Canal[13.Canal]
+	
+	Kafka-->Spark-->Redis
+	Spark-->ES-->Kibana
+	Spark-->HBase-->SBI-->WEB
+	Redis-->Spark
+	
+	DB-->Canal-->Kafka
+```
+
+##### 2.核心流程
+
+
+
+
+
+#### 2）需求具体说明
+
+​		**需求：**提供一个能够根据文字及选项等条件，进行灵活分析判断的数据功能。
+
+| **日期**   | 查询数据的日期                 |
+| ---------- | ------------------------------ |
+| **关键字** | 根据商品名称涉及到的词进行搜索 |
+
+返回结果
+
+| **饼图**             | **男女比例占比**                                             | 男  ，女 |
+| -------------------- | ------------------------------------------------------------ | -------- |
+| **年龄比例占比**     | 20岁以下，20-30岁，30岁以上                                  |          |
+| **购买行为数据明细** | 包括，用户id,性别年龄，级别，购买的时间，商品价格，订单状态，等信息。  可翻页。 |          |
+
+
+
+#### 3）程序执行流程
+
+>1.业务数据变化，canal将变化数据传入kafka
+>2.gmall-realtime中的saveUserInfotoredis将用户数据保存到redis
+>3.gmall-realtime中的selectApp将kafka流中的order_info和order_detail合并
+>4.然后再从redis中读取用户数据进行合并
+>5.最后的结果保存到ES
+
+
+
+#### 4）注意点
+
+1.样例类转换成为JSON字符串
+
+```
+pom.xml
+<dependency>
+    <groupId>org.json4s</groupId>
+    <artifactId>json4s-native_2.11</artifactId>
+    <version>3.5.4</version>
+</dependency>
+
+导入包
+import org.json4s.native.Serialization
+在转换前进行隐式转换
+implicit val formats=org.json4s.DefaultFormats
+val orderInfoJson: String = Serialization.write(orderInfo)
+
+```
+
+
+
+2.Java集合与Scala集合之间互转
+
+使用转换包进行转换
+
+```
+import collection.JavaConverters._
+```
+
+
+
+
+
+#### 5）项目启动流程
+
+>0、启动2，3，4，9，10，11
+>
+>1、gmall-canal模块中CanalClient，监测数据库，传输变化数据到kafka
+>
+>2、gmall-realtime模块中的SaveUserInfoToRedisApp，读取kafka流中user主题数据
+>
+>3、gmall-realtime模块中的SaleDetailApp，对order_info,order_detail,user_info数据合并并写入ES
+>
+>4、调用mysql脚本中的存储过程，产生模拟数据测试
+>
+>5、在kibana中查看产生的数据
+
+
 
 
 

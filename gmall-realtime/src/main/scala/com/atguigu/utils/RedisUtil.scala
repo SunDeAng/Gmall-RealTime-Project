@@ -44,8 +44,8 @@ object RedisUtil {
       //根据配置创建连接池
       jedisPool = new JedisPool(jedisPoolConfig,host,port.toInt)
     }
-    println(s"jedisPool.getNumActive = ${jedisPool.getNumActive}")  //打印活跃连接数
-    println("获取一个redis连接")
+    //println(s"jedisPool.getNumActive = ${jedisPool.getNumActive}")  //打印活跃连接数
+    //println("获取一个redis连接")
     jedisPool.getResource //从连接池获取一个连接
   }
 

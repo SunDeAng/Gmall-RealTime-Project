@@ -8,7 +8,7 @@ case class StartUpLog(mid: String,    //用户id
                       appid: String,  //应用id
                       area: String,   //地区，城市
                       os: String,     //系统
-                      ch: String,     //todo ch????
+                      ch: String,     //
                       `type`: String, //日志类型
                       vs: String,     //版本号
                       var logDate: String,

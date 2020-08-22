@@ -21,4 +21,7 @@ public interface PublisherService {
     //对接mapper包中OrderMapper的selectOrderAmountHourMap
     public Map getOrderAmountHourMap(String date);
 
+    //获取销售细节
+    public Map getSaleDetail(String date, int startpage, int size , String keyword);
+
 }

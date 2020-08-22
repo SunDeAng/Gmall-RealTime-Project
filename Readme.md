@@ -492,6 +492,10 @@ import collection.JavaConverters._
 >4、调用mysql脚本中的存储过程，产生模拟数据测试
 >
 >5、在kibana中查看产生的数据
+>
+>6、gmall-publisher模块负责发布数据(从phoenix取数据发布到端口)
+>
+>7、dw-chark模块主程序负责实时显示数据(从端口取数据进行实时显示)
 
 
 
